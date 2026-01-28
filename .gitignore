@@ -1,0 +1,20 @@
+# --- R related ---
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+.Rapp.history
+*-ex.R
+.Rtools
+.Rlibs/
+
+# --- Stata related ---
+*.log
+*.smcl
+*.gph
+*.dta.tmp
+
+# --- System related ---
+.DS_Store
+Thumbs.db
+desktop.ini
