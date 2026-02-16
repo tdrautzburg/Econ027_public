@@ -38,15 +38,15 @@ raw_data$DateObj <- as.yearmon(raw_data$DATE, format = "%b-%y")
 # 1. Extract Raw Series
 IP_raw  <- 100*raw_data$LNIPNSA    # Log IP
 PPI_raw <- 100*raw_data$LNPPINSA   # Log PPI
-DFF_raw <- as.numeric(raw_data$DFF) # Federal Funds Rate (Level)
-S_raw   <- raw_data$RESID      # Romer Shock
+FF_raw <- as.numeric(raw_data$FF) # Federal Funds Rate (Level)
+S_raw   <- raw_data$DTARG      # Romer Shock
 
 # 2. Convert to Time Series (Start Jan 1966)
 start_date <- c(1966, 1)
 
 IP_ts_level  <- ts(IP_raw, start = start_date, frequency = 12)
 PPI_ts_level <- ts(PPI_raw, start = start_date, frequency = 12)
-FF_ts_level  <- ts(DFF_raw, start = start_date, frequency = 12) # Level of FFR
+FF_ts_level  <- ts(FF_raw, start = start_date, frequency = 12) # Level of FFR
 S_ts         <- ts(S_raw, start = start_date, frequency = 12)
 
 # 3. Create Differences for ADL Inputs
