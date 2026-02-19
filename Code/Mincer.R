@@ -62,6 +62,11 @@ x_resid <- residuals(lm(educ ~ exper  + tenure + female, data = wage1))
 fwl_model <- lm(y_resid ~ x_resid)
 fwl_se <- summary(fwl_model)$coefficients["x_resid", "Std. Error"]
 
+y_raw <- wage1$lwage #Otherwise, would have to move x_resid to the wage1 data frame
+# AlternativeC: Regress raw Y on X-residuals
+fwl_model_alt <- lm(y_raw ~ x_resid)
+fwl_se_alt <- summary(fwl_model_alt)$coefficients["x_resid", "Std. Error"]
+
 # ---------------------------------------------------------
 # PART 4: The Comparison Output
 # ---------------------------------------------------------
@@ -73,6 +78,9 @@ cat("\n1. COEFFICIENTS (Omitted Variable Bias Check)\n")
 cat(sprintf("  Simple Model (educ only):  %.5f\n", coef(simple_model)["educ"]))
 cat(sprintf("  Full Model (w/ controls):  %.5f\n", coef(full_model)["educ"]))
 cat("  -> Note: The simple model underestimates the return to education.\n")
+cat(sprintf("  Residual Model:  %.5f\n", coef(fwl_model)["x_resid"]))
+cat(sprintf("  Residual Model (raw LHS):  %.5f\n", coef(fwl_model_alt)["x_resid"]))
+cat("  -> Note: Same results as full model.\n")
 
 cat("\n2. STANDARD ERRORS (educ coefficient)\n")
 cat(sprintf("  Full Model (Default SE):   %.5f\n", full_se_default))

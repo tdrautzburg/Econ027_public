@@ -26,6 +26,7 @@ source(here("functions", "f_run_lag_augmented_LP.R")) # Contains 'run_lag_augmen
 ################################################################
 
 ZeroImpactRestriction <- FALSE
+ActualShock <- FALSE
 
 ################################################################
 # 1. Load and Prep Data
@@ -39,7 +40,13 @@ raw_data$DateObj <- as.yearmon(raw_data$DATE, format = "%b-%y")
 IP_raw  <- 100*raw_data$LNIPNSA    # Log IP
 PPI_raw <- 100*raw_data$LNPPINSA   # Log PPI
 FF_raw <- as.numeric(raw_data$FF) # Federal Funds Rate (Level)
-S_raw   <- raw_data$DTARG      # Romer Shock
+if (ActualShock) {
+  S_raw   <- raw_data$RESID      # Romer Shock
+  suffix <- ""
+} else {
+  S_raw   <- raw_data$DTARG      # raw change in target rate
+  suffix <- "_DTARG"
+}
 
 # 2. Convert to Time Series (Start Jan 1966)
 start_date <- c(1966, 1)
@@ -333,7 +340,7 @@ print(combined_plot_1)
 
 # Save the plot
 if (ZeroImpactRestriction) {
-  ggsave(here("../Papers","GraphsTables", "RR_ADL_LP_benchmark.png"), combined_plot_1, width = 10, height = 8)
+  ggsave(here("../Papers","GraphsTables", paste0("RR_ADL_LP_benchmark" , suffix, ".png")), combined_plot_1, width = 10, height = 8)
 } else {
-    ggsave(here("../Papers","GraphsTables", "RR_ADL_LP_unrestricted.png"), combined_plot_1, width = 10, height = 8)
+    ggsave(here("../Papers","GraphsTables", paste0("RR_ADL_LP_unrestricted" , suffix, ".png")), combined_plot_1, width = 10, height = 8)
 }
