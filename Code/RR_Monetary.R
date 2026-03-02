@@ -26,7 +26,7 @@ source(here("functions", "f_run_lag_augmented_LP.R")) # Contains 'run_lag_augmen
 ################################################################
 
 ZeroImpactRestriction <- FALSE
-ActualShock <- FALSE
+ActualShock <- TRUE
 
 ################################################################
 # 1. Load and Prep Data
@@ -214,10 +214,12 @@ lp_vars_list <- list(
 # WARNING: Including Curr_IP when Target is Log_IP causes singularity at h=0.
 # The code below runs, but results at h=0 might be NA or 0 depending on lm() handling.
 if (ZeroImpactRestriction) {
-  current_controls <- list(
-    "Curr_IP"  = IP_ts_level, 
-    "Curr_PPI" = PPI_ts_level
-  )
+    current_controls <- list(
+      "Curr_IP"  = IP_ts_level, 
+      "Curr_PPI" = PPI_ts_level,
+      # Adds 11 dummies (Jan is the baseline) to avoid the dummy variable trap
+      "Month"    = model.matrix(~ factor(cycle(IP_ts_level)))[, -1] 
+    )
 } else {
   current_controls <- NULL  
 }
@@ -229,8 +231,8 @@ lp_out_df <- f_run_lag_augmented_LP(
   shock_ts       = S_ts,
   extra_controls = current_controls, 
   h_max          = 48,
-  n_lag_vars     = 24, # RR use 24 lags of outcome
-  n_lag_shock    = 36  # RR use 36 lags of shock
+  n_lag_vars     = 4, # RR use 24 lags of outcome
+  n_lag_shock    = 4  # RR use 36 lags of shock
 )
 
 # D. Format LP Results to match ADL structure
